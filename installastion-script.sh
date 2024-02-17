@@ -74,9 +74,17 @@ VALIDATE $? "Updating apt"
 docker network create dwithi
 docker run -d --name jenkins --network=dwithi -p 8080:8080 jenkins/jenkins:lts &>>$LOG
 VALIDATE $? "Creating jenkins using docker image: jenkins/jenkins:lts "
-docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword &>>$LOG
-docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+if [ $? -eq 0 ]; then
+docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword &>>$LOG
+echo "jenkins adminpassword : " 
+docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 VALIDATE $? "cat /var/jenkins_home/secrets/initialAdminPassword"
+ exit 0
+else
+  echo "Docker installation failed"
+  exit 1
+fi
+
 #-----------------------------------SonarQube Using Docker ------------------------------
 
   exit 0
