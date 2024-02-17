@@ -5,7 +5,7 @@ LOG="java-installation-${DATE}.log"
 R="\e[31m"
 G="\e[32m"
 N="\e[0m"
-
+echo $USERID
 VALIDATE(){
 if [ $1 -ne 0 ]; then
 	echo -e "$2 ... ${R} FAILURE ${N}" 2>&1 | tee -a $LOG
@@ -19,12 +19,12 @@ if [ $USERID -ne 0 ]; then
 	echo -e "${R} You need to be root user to execute this script ${N}"
 	exit 1
 fi
-figlet updating
+figlet -c updating
 sudo apt update -y &>>$LOG 
 
 VALIDATE $? "Updating apt"
 
-figlet java installation
+figlet -c java installation
 
 sudo apt install openjdk-17-jre -y &>>$LOG
 
@@ -34,13 +34,13 @@ echo "java -version"
 
 java -version 
 
-figlet updating
+figlet -c updating
 
 sudo apt update -y &>>$LOG 
 
 VALIDATE $? "Updating apt"
 
-figlet Python3 installation
+figlet -c Python3 installation
 
 sudo apt install python3 -y &>>$LOG
 
