@@ -20,17 +20,33 @@ if [ $USERID -ne 0 ]; then
 	exit 1
 fi
 figlet updating
-cat /etc/os-release
 sudo apt update -y &>>$LOG 
 
 VALIDATE $? "Updating apt"
 
-figlet java
+figlet java installation
 
 sudo apt install openjdk-17-jre -y &>>$LOG
 
 VALIDATE $? "installing java-17"
 
-java -version &>>$LOG
+echo "java -version"
 
-VALIDATE $? "java version" 
+java -version 
+
+figlet updating
+
+sudo apt update -y &>>$LOG 
+
+VALIDATE $? "Updating apt"
+
+figlet Python3 installation
+
+sudo apt install python3 -y &>>$LOG
+
+VALIDATE $? "Installing Python3..."
+
+echo "Python3 --version"
+
+python3 --version
+
