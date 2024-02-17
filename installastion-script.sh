@@ -39,30 +39,30 @@ python3 --version
 #------------------------------------docker--------------------------------------------
 
 # Update package lists
-sudo apt-get update
+sudo apt-get update &>>$LOG
 
 # Install required packages
-sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common &>>$LOG
 
 # Add Docker GPG key
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg &>>$LOG
 
 # Add Docker repository
 echo \
 "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null &>>$LOG
 
 # Update package lists again
-sudo apt-get update
+sudo apt-get update &>>$LOG
 
 # Install Docker
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-VALIDATE $? "installing docker-ce docker-ce-cli containerd.io"
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io &>>$LOG
+VALIDATE $? "installing docker-ce docker-ce-cli containerd.io" &>>$LOG
 # Start and enable Docker service
-sudo systemctl start docker
-VALIDATE $? "systemctl start docker"
-sudo systemctl enable docker
-VALIDATE $? "systemctl enable docker"
+sudo systemctl start docker &>>$LOG
+VALIDATE $? "systemctl start docker" &>>$LOG
+sudo systemctl enable docker &>>$LOG
+VALIDATE $? "systemctl enable docker" &>>$LOG
 
 # Check if Docker installation was successful
 if [ $? -eq 0 ]; then
@@ -74,10 +74,13 @@ VALIDATE $? "Updating apt"
 docker network create dwithi
 docker run -d --name jenkins --network=dwithi -p 8080:8080 jenkins/jenkins:lts &>>$LOG
 VALIDATE $? "Creating jenkins using docker image: jenkins/jenkins:lts "
+sleep 30
+docker ps -a
+
 if [ $? -eq 0 ]; then
-docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword &>>$LOG
+sudo docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword &>>$LOG
 echo "jenkins adminpassword : " 
-docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+sudo docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 VALIDATE $? "cat /var/jenkins_home/secrets/initialAdminPassword"
  exit 0
 else
