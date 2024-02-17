@@ -71,7 +71,39 @@ VALIDATE $? "systemctl enable docker" &>>$LOG
 # Check if Docker installation was successful
 if [ $? -eq 0 ]; 
 then #docker Block
-    DOCKER_CONTAINERS
+     figlet Jenkins
+    sudo apt update -y &>>$LOG 
+    VALIDATE $? "Updating apt"
+    docker network create dwithi
+    docker run -d --name jenkins --network=dwithi -p 8080:8080 jenkins/jenkins:lts &>>$LOG
+    VALIDATE $? "Creating jenkins using docker image: jenkins/jenkins:lts "
+    sleep 5
+    docker ps -a
+
+    echo "http//:"
+
+        if [ $? -eq 0 ]; then # jenkins block
+            sudo docker exec -d jenkins cat /var/jenkins_home/secrets/initialAdminPassword &>>$LOG1
+            echo "jenkins adminpassword : " 
+            sudo docker exec -d jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+            VALIDATE $? "cat /var/jenkins_home/secrets/initialAdminPassword"
+            exit 0
+        else # jenkins block
+            echo "conatainer creation error"
+            exit 1
+        fi # jenkins block
+
+        #--------------------------------sonarqube using docker------------------------------
+        figlet SonarQube
+        docker run -d --name sonarqube --network=dwithi -p 9000:9000 sonarqube:lts &>>$LOG
+        VALIDATE $? "Creating sonarqube using docker image: sonarqube:lts"
+        if [ $? -eq 0 ]; then # sonarqubeblock
+            echo "sonarqube conatiner is created successfully"
+            exit 0
+        else # sonarqube block
+            echo "conatainer creation error"
+            exit 1
+        fi # sonarqube block
     exit 0 # docker block
 else # docker block
     echo "Docker installation failed"
