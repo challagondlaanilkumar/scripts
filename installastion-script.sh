@@ -14,16 +14,18 @@ else
 	echo -e "$2 ... ${G} SUCCESS ${N}" 2>&1 | tee -a $LOG
 fi
 }
-
+#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
 if [ $USERID -ne 0 ]; then
 	echo -e "${R} You need to be root user to execute this script ${N}"
 	exit 1
 fi
-
+figlet updating
 cat /etc/os-release
 sudo apt update -y &>>$LOG 
 
 VALIDATE $? "Updating apt"
+
+figlet java
 
 sudo apt install openjdk-17-jre -y &>>$LOG
 
